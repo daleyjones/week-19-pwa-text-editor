@@ -1,67 +1,69 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
-const path = require('path');
-const { InjectManifest } = require('workbox-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WebpackPwaManifest = require("webpack-pwa-manifest");
+const path = require("path");
+const { InjectManifest } = require("workbox-webpack-plugin");
 
 module.exports = () => {
   return {
-    mode: 'development',
+    mode: "development",
     entry: {
-      main: './src/js/index.js',
-      install: './src/js/install.js',
-      editor: './src/js/editor.js'
+      main: "./src/js/index.js",
+      install: "./src/js/install.js",
     },
     output: {
-      filename: '[name].bundle.js',
-      path: path.resolve(__dirname, 'dist'),
+      filename: "[name].bundle.js",
+      path: path.resolve(__dirname, "dist"),
     },
     plugins: [
-      // HTML Webpack Plugin for generating HTML files
+      // HtmlWebpackPlugin for generating the HTML file
       new HtmlWebpackPlugin({
-      template: './index.html', // Corrected the path to your HTML template
-        title: 'texEditor'
+        template: "./index.html",
+        title: "Just Another Text Editor",
       }),
 
-      // Webpack PWA Manifest Plugin for generating a manifest file
+      // WebpackPwaManifest for generating the manifest file
       new WebpackPwaManifest({
         fingerprints: false,
         inject: true,
-        name: 'text editor',
-        short_name: 'JATE',
-        description: 'edit!',
-        background_color: '#225ca3',
-        theme_color: '#225ca3',
-        start_url: './',
-        publicPath: './',
+        name: "Just Another Text Editor",
+        short_name: "J.A.T.E.",
+        description: "Take notes",
+        background_color: "#272822",
+        theme_color: "#31A9E1",
+        start_url: "/",
+        publicPath: "./",
         icons: [
           {
-            src: path.resolve(__dirname, 'src/images/logo.png'), // Corrected the path to your icon
+            src: path.resolve("src/images/logo.png"),
             sizes: [96, 128, 192, 256, 384, 512],
-            destination: 'assets/icons', // Updated the destination path
+            destination: path.join("assets", "icons"),
           },
         ],
       }),
 
-      // InjectManifest for service worker
+
       new InjectManifest({
-        swSrc: './src-sw.js', 
-        swDest: 'src-sw.js', 
+        swSrc: "./src-sw.js",
+        swDest: 'src-sw.js',
       }),
     ],
 
     module: {
       rules: [
+       
         {
-          test: /\.css$/,
+          test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
         {
-          test: /\.js$/,
+          test: /\.m?js$/,
           exclude: /node_modules/,
+          
           use: {
             loader: 'babel-loader',
             options: {
               presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/transform-runtime'],
             },
           },
         },
